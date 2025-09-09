@@ -60,8 +60,6 @@ pip install torch==2.3.0+cu118 torchaudio==2.3.0+cu118 --extra-index-url https:/
 # ตัวอย่างเสียง
 [demo ](https://demot2shmong.yangnobody.com/) 
 
-  
-https://github.com/user-attachments/assets/003c8a54-6f75-4456-907d-d28897e4c393
 
 # อ้างอิง
 
