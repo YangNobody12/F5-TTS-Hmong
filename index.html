@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F5-TTS Hmong Text-to-Speech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .file-input-container {
+            position: relative;
+            margin-top: 5px;
+        }
+
+        .file-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-input-label:hover {
+            background-color: #e8f4fc;
+            border-color: #3498db;
+        }
+
+        .file-name {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .default-audio {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e8f4fc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .default-audio i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        .btn {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .output-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .audio-player {
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 10px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            background: #e74c3c;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .btn {
+                padding: 14px 20px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>F5-TTS Hmong</h1>
+            <p class="subtitle">Text-to-Speech Generation for Hmong Language</p>
+        </header>
+
+        <div class="input-group">
+            <label for="refAudio">
+                <i class="fas fa-file-audio"></i> Reference Audio
+            </label>
+            <div class="file-input-container">
+                <div class="file-input-label">
+                    <span>Choose audio file (optional)</span>
+                    <i class="fas fa-upload"></i>
+                </div>
+                <input type="file" id="refAudio" class="file-input" accept="audio/*">
+            </div>
+            <div class="file-name" id="fileName">No file chosen</div>
+
+            <div class="default-audio">
+                <i class="fas fa-info-circle"></i>
+                <span>If no file is selected, the default reference audio will be used</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="refText">
+                <i class="fas fa-font"></i> Reference Text
+            </label>
+            <input type="text" id="refText" value="Kuv pom ib tug npauj npaim zoo nkauj heev li."
+                placeholder="Enter reference text">
+        </div>
+
+        <div class="input-group">
+            <label for="genText">
+                <i class="fas fa-pencil-alt"></i> Text to Generate
+            </label>
+            <input type="text" id="genText" value="Nyob zoo os phooj ywg" placeholder="Enter text to generate">
+        </div>
+
+        <button id="generateBtn" class="btn" onclick="generateTTS()">
+            <i class="fas fa-play"></i> Generate TTS
+        </button>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Generating audio... Please wait</p>
+        </div>
+
+        <div class="output-section">
+            <h2><i class="fas fa-volume-up"></i> Output</h2>
+            <audio id="outputAudio" class="audio-player" controls></audio>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <footer>
+        <p>F5-TTS Hmong &copy; 2023 | Text-to-Speech Technology for Hmong Language</p>
+    </footer>
+
+    <script>
+        // Update file name when a file is selected
+        document.getElementById('refAudio').addEventListener('change', function (e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
+            document.getElementById('fileName').textContent = fileName;
+        });
+
+        // Show notification function
+        function showNotification(message, isError = true) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.background = isError ? '#e74c3c' : '#2ecc71';
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        async function generateTTS() {
+            const refAudioInput = document.getElementById("refAudio");
+            const refText = document.getElementById("refText").value;
+            const genText = document.getElementById("genText").value;
+            const loading = document.getElementById("loading");
+            const generateBtn = document.getElementById("generateBtn");
+
+            loading.style.display = 'block';
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<i class="fas fa-cog fa-spin"></i> Processing...';
+
+            const formData = new FormData();
+
+            if (refAudioInput.files.length > 0) {
+                // User selected a file
+                formData.append("ref_audio", refAudioInput.files[0]);
+            } else {
+                // Fetch default audio from server or local path
+                const defaultAudioResponse = await fetch("src/f5_tts/infer/examples/thai_examples/ref_hmn.wav");
+                const audioBlob = await defaultAudioResponse.blob();
+                formData.append("ref_audio", audioBlob, "default_ref.wav");
+            }
+
+            formData.append("ref_text", refText);
+            formData.append("gen_text", genText);
+            console.log(formData)
+
+            try {
+                const response = await fetch("http://localhost:8000/api/tts/generate", {
+                    method: "POST",
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const audioUrl = `http://localhost:8000${data.audio_url}`;
+                    const audioElement = document.getElementById("outputAudio");
+                    audioElement.src = audioUrl;
+                    audioElement.onloadeddata = () => audioElement.play();
+                } else {
+                    alert("TTS generation failed");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error calling API");
+            } finally {
+                loading.style.display = 'none';
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<i class="fas fa-play"></i> Generate TTS';
+            }
+        }
+
+    </script>
+</body>
+
+</html>
