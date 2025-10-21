@@ -27,8 +27,11 @@ from f5_tts.infer.infer_gradio import *
 
 #ถ้าอยากใช้โมเดลที่อัพเดทใหม หรือโมเดลภาษาอื่น สามารถแก้ไขโค้ด Model และ Vocab เช่น default_model_base = "hf://VIZINTZOR/F5-TTS-THAI/model_350000.pt"
 default_model_base = "hf://Pakorn2112/F5TTS-Hmong/model_159952.safetensors"
+# default_model_base = "D:\\tts_model\\all_model\\test_model\\model_440000.pt"
 v2_model_base = "hf://Pakorn2112/F5TTS-Hmong/model_159952.safetensors"
-vocab_base = "./vocab/vocab.txt"
+# vocab_base = "./vocab/vocab.txt"
+vocab_base = "D:\\tts_model\\all_model\\multi lang\\vocab.txt"
+# vocab_base = "D:\\tts_model\\all_model\\test_model\\vocab.txt"
 vocab_ipa_base = "./vocab/vocab_ipa.txt"
 
 model_choices = ["Default", "V2", "Custom"]

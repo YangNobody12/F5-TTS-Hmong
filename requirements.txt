@@ -1,0 +1,10 @@
+gradio
+soundfile
+numpy
+cached_path
+f5-tts @ git+https://github.com/VYNCX/F5-TTS-THAI.git
+
+# PyTorch + CUDA 11.8
+--extra-index-url https://download.pytorch.org/whl/cu118
+torch==2.3.0+cu118
+torchaudio==2.3.0+cu118
